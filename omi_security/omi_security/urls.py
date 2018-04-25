@@ -18,5 +18,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('', include('security_node.urls')),
+    path(r'oauth/', include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
 ]
