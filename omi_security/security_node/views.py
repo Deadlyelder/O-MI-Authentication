@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
 from security_node.models import Group, User_Group_Relation, Rule
+from django.contrib.auth.models import User
 from security_node.form import UserForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
@@ -33,7 +34,6 @@ def login(request):
     View used for logging in to the service
     """
     if not request.user.is_authenticated:
-        form = AuthenticationForm()
         if request.method == 'POST':
             form = AuthenticationForm(data=request.POST)
             if form.is_valid():
@@ -42,11 +42,21 @@ def login(request):
                 user = authenticate(username=username, password=raw_password)
                 auth_login(request, user)
                 return redirect('home')
+        else:
+            form = AuthenticationForm()
         return render(request, "login.html", {'form': form})
     else:
         return redirect('home')
 
-
+def signup(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = UserForm()
+    return render(request, 'signup.html', {'form': form})
 
 
 
