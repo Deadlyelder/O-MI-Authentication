@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+
+
+<title>OMI Security Module</title>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap_custom_style.css' %}" />
+
+</head>
+<body>
+
+    <div>
+        <h1 class="title">OMI Security Module</h1>
+    </div>
+    <div class="topnav" id="myTopnav">
+            <a href="{% url 'home' %}">Home</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">Log out {{request.user}}</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'signup' %}">Register</a>
+        {% endif %}
+    </div>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+  {% if messages %}
+    {% for message in messages %}
+    <div id="message{{forloop.counter}}" class="alert {{message.tags}}">
+      <span class="closebtn" onclick="messageBarHider({{forloop.counter}});">&times;</span>
+      {{ message }}
+    </div>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>

@@ -12,9 +12,9 @@ class UserForm(forms.ModelForm):
     email = forms.EmailField(label='Email', max_length=64, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
     password = forms.CharField(min_length=6, max_length=32, label='Password', widget=forms.PasswordInput)
     password1 = forms.CharField(min_length=6, max_length=32, label='Password confirmation', widget=forms.PasswordInput)
-    is_staff = forms.BooleanField(label='Superuser', required=False)
+    is_superuser = forms.BooleanField(label='Superuser', required=False)
     class Meta:
-        fields = ['first_name', 'last_name', 'username', 'email', 'password', 'password1', 'is_staff']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password', 'password1', 'is_superuser']
         model=User
     def clean(self):
         cleaned_data = super(UserForm, self).clean()

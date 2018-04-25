@@ -17,8 +17,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 @login_required
 def home(request):
-    user = request.user
-    return HttpResponse("Hello, " + str(user)+ ". You're at the security_node index.")
+    #user = request.user
+    #return HttpResponse("Hello, " + str(user)+ ". You're at the security_node index.")
+    return render(request, "home.html")
 
 
 def logout(request):
