@@ -22,6 +22,11 @@ def home(request):
     return render(request, "home.html")
 
 
+@login_required
+def authmodule(request):
+    return render(request, "authmodule.html")
+
+
 def logout(request):
     """
     View used for logging out of the service
