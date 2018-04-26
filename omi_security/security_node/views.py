@@ -24,7 +24,8 @@ def home(request):
 
 @login_required
 def authmodule(request):
-    return render(request, "authmodule.html")
+    registered_users = Registered_Users.objects.all()
+    return render(request, "authmodule.html",{"list_users":registered_users})
 
 
 @login_required
