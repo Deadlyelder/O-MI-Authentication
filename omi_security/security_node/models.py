@@ -4,12 +4,12 @@ from django.contrib.auth.models import User
 
 
 class Registered_Users(models.Model):
-    username = models.CharField(max_length=200)
-    email = models.EmailField(max_length=200)
+    username = models.CharField(max_length=200, unique=True)
+    email = models.EmailField(max_length=200, unique=True)
 
 
 class Group(models.Model):
-    group_name = models.CharField(max_length=200)
+    group_name = models.CharField(max_length=200, unique=True)
 
 
 class User_Group_Relation(models.Model):

@@ -144,7 +144,10 @@ function showCheckboxes() {
 				</div>
 				<div class="panel-body">
 					<select id="groupsSelect">
-						<option value="" disabled selected>Select group</option>
+						<option value="" selected>Select group</option>
+                        {% for u in list_groups %}
+                        <option value="" selected>{{u.group_name}}</option>
+                        {% endfor %}
 					</select>
 					<button id="groupAddButton" class="btn btn-success" type="button">
 			    	<span class="glyphicon glyphicon-plus" aria-hidden="true"/>
@@ -270,7 +273,7 @@ function showCheckboxes() {
             <div class="form-group">
               <label for="groupItemName" class="control-label ">Group Name*</label>
               <a data-toggle="tooltip" title="Enter group name" data-placement="top">
-                <input name="new_group" type="text" class="form-control" id="groupItemName">
+                <input name="group_name" type="text" class="form-control" id="groupItemName">
               </a>
             </div>
 
@@ -291,7 +294,7 @@ function showCheckboxes() {
 
                         {% for u in list_users %}
                         <label for="{{u.email}}">
-                            <input type="checkbox" name="users_ingroup" id="{{u.email}}" value="{{u.email}}"/>{{u.email}}</label>
+                            <input type="checkbox" name="users_ingroup" id="{{u.email}}" value="{{u.id}}"/>{{u.email}}</label>
                         {% endfor %}
                         </div>
                     </div>
@@ -301,7 +304,7 @@ function showCheckboxes() {
               </div> -->
             </div>
               <button type="button" class="btn btn-default newGroupItemCancel" data-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="submit" class="btn btn-primary" name="action" value="addgroup">Save</button>
           </form>
         </div>
         <div class="modal-footer">
@@ -320,7 +323,7 @@ function showCheckboxes() {
           <h4 class="modal-title" id="newUserItemLabel">New User</h4>
         </div>
         <div class="modal-body">
-          <form action="{% url 'adduser' %}" autocomplete="off" method="POST">
+          <form action="#" autocomplete="off" method="POST">
               {% csrf_token %}
             <input type="hidden" name="parent" id="userItemParent">
             <small>* required</small>

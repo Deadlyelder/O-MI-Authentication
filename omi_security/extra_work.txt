@@ -4,51 +4,18 @@ sudo apt install pycharm-community
 
 
 
+To delete all tables:
+
+from security_node.models import Group, User_Group_Relation, Rule, Registered_Users
+from django.contrib.auth.models import User
+
+Rule.objects.all().delete()
+User_Group_Relation.objects.all().delete()
+Group.objects.all().delete()
+Registered_Users.objects.all().delete()
 
 
-
-
-
-<form action="#" method="POST">
-              {% csrf_token %}
-            <input type="hidden" name="parent" id="groupItemParent">
-            <small>* required</small>
-            <div class="form-group">
-              <label for="groupItemName" class="control-label ">Group Name*</label>
-              <a data-toggle="tooltip" title="Enter group name" data-placement="top">
-                <input name="new_group" type="text" class="form-control" id="groupItemName">
-              </a>
-            </div>
-
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 class="panel-title">
-                  <b>Add Users</b>
-                </h4>
-              </div>
-                <div class="multiselect">
-                    <div class="selectBox" onclick="showCheckboxes()">
-                        <select>
-                            <option>Select an option</option>
-                            </select>
-                        <div class="overSelect"></div>
-                         </div>
-                    <div id="checkboxes">
-
-                        {% for u in list_users %}
-                        <label for="{{u.email}}">
-                            <input type="checkbox" id="{{u.email}}" />{{u.email}}</label>
-                        {% endfor %}
-                        </div>
-                    </div>
-
-             <!-- <div id="newGroupValues" class="panel-body">
-								<select id="addUsersSelect" multiple></select>
-              </div> -->
-            </div>
-              <button type="button" class="btn btn-default newGroupItemCancel" data-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary" id="newGroupItemSubmit">Save</button>
-          </form>
+User.objects.all().delete()
 
 
 
@@ -57,12 +24,11 @@ sudo apt install pycharm-community
 
 
 
-
-
-
-
-
-
-
-
-
+Things To DO:
+    Need to show error on authmodule page on addition of duplicate user or duplicate group
+    Need to edit group users
+    Need to add option to delete users
+    Need to add option to delete group
+    Need to add email in User database for oauth
+    >Need to add email in cookie
+    >Need to add interface for json reply to OMI node

@@ -52,12 +52,11 @@ class Registered_UsersForm(forms.ModelForm):
         fields = ['username', 'email']
         model = Registered_Users
 
-class GroupForm(forms.ModelForm):
-    username = forms.CharField(min_length=6, label='Username', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
-    email = forms.EmailField(label='Email', max_length=64, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
 
+class GroupForm(forms.ModelForm):
+    group_name = forms.CharField(min_length=6, label='Username', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'new_group'}))
     class Meta:
-        fields = ['username', 'email']
+        fields = ['group_name']
         model = Group
 
 
