@@ -26,7 +26,7 @@ def home(request):
 @csrf_protect
 def authmodule(request):
     if request.method == 'POST':
-        print ('--------------',request.POST['users_ingroup'])
+        print('--------/////------', request.POST.getlist('users_ingroup'))
     registered_users = Registered_Users.objects.all()
     return render(request, "authmodule.html",{"list_users":registered_users})
 

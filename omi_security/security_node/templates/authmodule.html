@@ -287,11 +287,11 @@ function showCheckboxes() {
                             </select>
                         <div class="overSelect"></div>
                          </div>
-                    <div name="users_ingroup" id="checkboxes">
+                    <div id="checkboxes">
 
                         {% for u in list_users %}
                         <label for="{{u.email}}">
-                            <input type="checkbox" id="{{u.email}}" />{{u.email}}</label>
+                            <input type="checkbox" name="users_ingroup" id="{{u.email}}" value="{{u.email}}"/>{{u.email}}</label>
                         {% endfor %}
                         </div>
                     </div>
