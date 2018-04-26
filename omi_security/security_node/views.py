@@ -19,7 +19,10 @@ from django.views.decorators.csrf import csrf_protect
 def home(request):
     #user = request.user
     #return HttpResponse("Hello, " + str(user)+ ". You're at the security_node index.")
-    return render(request, "home.html")
+    response = render(request, "home.html")
+    response.set_cookie("email", request.user.email)
+    return response
+    #return render(request, "home.html")
 
 
 @login_required

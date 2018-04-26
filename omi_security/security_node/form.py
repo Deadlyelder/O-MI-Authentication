@@ -24,6 +24,12 @@ class UserForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Password and Confirm Password does not match"
             )
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).exists():
+            raise forms.ValidationError(u'Email addresses must be unique.')
+        return email
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super(UserForm, self).save(commit=False)
