@@ -72,7 +72,9 @@ def login(request):
                 raw_password = form.cleaned_data.get('password')
                 user = authenticate(username=username, password=raw_password)
                 auth_login(request, user)
-                return redirect('home')
+                response = redirect('home')
+                response.set_cookie("email", user.email)
+                return response
         else:
             form = AuthenticationForm()
         return render(request, "login.html", {'form': form})
