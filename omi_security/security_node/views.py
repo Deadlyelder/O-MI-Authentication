@@ -2,9 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse
-from security_node.models import Group, User_Group_Relation, Rule
+from security_node.models import Group, User_Group_Relation, Rule, Registered_Users
 from django.contrib.auth.models import User
-from security_node.form import UserForm
+from security_node.form import UserForm, Registered_UsersForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
@@ -25,6 +25,17 @@ def home(request):
 @login_required
 def authmodule(request):
     return render(request, "authmodule.html")
+
+
+@login_required
+def adduser_by_Superuser(request):
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'adduser':
+            form = Registered_UsersForm(request.POST)
+            if form.is_valid():
+                form.save()
+    return redirect('authmodule')
 
 
 def logout(request):

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from security_node.models import Group, User_Group_Relation, Rule
+from security_node.models import Group, User_Group_Relation, Rule, Registered_Users
 
 
 
@@ -41,5 +41,16 @@ class UserForm(forms.ModelForm):
             return username
         raise forms.ValidationError('Duplicate User Exists')
     '''
+
+
+
+class Registered_UsersForm(forms.ModelForm):
+    username = forms.CharField(min_length=6, label='Username', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
+    email = forms.EmailField(label='Email', max_length=64, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+
+    class Meta:
+        fields = ['username', 'email']
+        model = Registered_Users
+
 
 

@@ -303,29 +303,30 @@
           <h4 class="modal-title" id="newUserItemLabel">New User</h4>
         </div>
         <div class="modal-body">
-          <form>
+          <form action="{% url 'adduser' %}" autocomplete="off" method="POST">
+              {% csrf_token %}
             <input type="hidden" name="parent" id="userItemParent">
             <small>* required</small>
             <div class="form-group">
               <label for="userItemName" class="control-label ">Username*</label>
               <a data-toggle="tooltip" title="Enter username" data-placement="top">
-                <input name="name" type="text" class="form-control" id="userItemName">
+                <input name="username" type="text" class="form-control" id="userItemName">
               </a>
             </div>
 
 						<div class="form-group">
               <label for="userItemEmail" class="control-label ">E-mail*</label>
               <a data-toggle="tooltip" title="Enter user e-mail" data-placement="top">
-                <input name="name" type="text" class="form-control" id="userItemEmail">
+                <input name="email" type="text" class="form-control" id="userItemEmail">
               </a>
             </div>
-
+            <div class="modal-footer">
+          <button type="button" class="btn btn-default newUserItemCancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="newUserItemSubmit" name="action" value="adduser">Save</button>
+           </div>
           </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default newUserItemCancel" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="newUserItemSubmit">Save</button>
-        </div>
+
       </div>
     </div>
   </div>

@@ -7,7 +7,8 @@ urlpatterns = [
     path(r'login', views.login, name='login'),
     path(r'signup', views.signup, name='signup'),
     path(r'logout', views.logout, name='logout'),
-    path(r'authmodule', views.authmodule, name='authmodule')
+    path(r'authmodule', views.authmodule, name='authmodule'),
+    path(r'adduser', views.adduser_by_Superuser, name='adduser')
 
 ]
 
