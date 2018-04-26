@@ -11,7 +11,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.views.decorators.csrf import csrf_protect
 
 
 
@@ -23,12 +23,16 @@ def home(request):
 
 
 @login_required
+@csrf_protect
 def authmodule(request):
+    if request.method == 'POST':
+        print ('--------------',request.POST['users_ingroup'])
     registered_users = Registered_Users.objects.all()
     return render(request, "authmodule.html",{"list_users":registered_users})
 
 
 @login_required
+@csrf_protect
 def adduser_by_Superuser(request):
     if request.method == 'POST':
         action = request.POST['action']
