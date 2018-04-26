@@ -29,6 +29,10 @@ Things To DO:
     Need to edit group users
     Need to add option to delete users
     Need to add option to delete group
-    Need to add email in User database for oauth
-    >Need to add email in cookie
-    >Need to add interface for json reply to OMI node
+    >>>>>>>>>>>>>>>>>>>>>>>Need to add email in User database for oauth
+    >>>>>>>>>>>>>>>>>>>>>>>Need to add email in cookie
+    Need to add interface for json reply to OMI node
+
+
+
+

@@ -61,9 +61,50 @@ $ sudo apt install pycharm-community
 ```
 
 
+### To configure NGINX as proxy, use the following method
 
+Install nginx using the following command:
 
+```
+$ sudo apt-get install nginx
+```
+Now go to the following folder and edit the default file
 
+```
+$ cd /etc/nginx/sites-enabled
+/etc/nginx/sites-enabled$ sudo nano default
+```
+
+In the default file: comment out the following lines
+```
+#root /var/www/html;
+
+# Add index.php to the list if you are using PHP
+#index index.html index.htm index.nginx-debian.html;
+
+location / {
+    # First attempt to serve request as file, then
+    # as directory, then fall back to displaying a 404.
+    #try_files $uri $uri/ =404;
+
+```
+Inside the location / {   add the following code
+```
+proxy_set_header        Host $host;
+proxy_set_header        X-Real-IP $remote_addr;
+proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header        X-Forwarded-Proto $scheme;
+proxy_pass              http://127.0.0.1:8000$request_uri;
+proxy_read_timeout  90;
+
+```
+
+Now restart nginx using following command:
+```
+$ sudo service nginx reload
+```
+Now you can access the front page of django using 127.0.0.1
+Django server should be running on 127.0.0.1:8000
 
 
 

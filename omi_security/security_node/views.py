@@ -95,5 +95,17 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
+def omi_authquery(request):
+    email = request.GET.get('email')
+    print(email)
+    return redirect('home')
+
+
+
+
+
+
+
+
 
 
