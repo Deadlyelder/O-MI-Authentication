@@ -12,7 +12,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
-
+import json
 
 
 @login_required
@@ -97,8 +97,22 @@ def signup(request):
 
 def omi_authquery(request):
     email = request.GET.get('email')
-    print(email)
-    return redirect('home')
+
+    try:
+        status=False
+        user = User.objects.get(email=email)
+        if user.is_superuser:
+            status=True
+
+        registered_users_id = Registered_Users.objects.get(email=email).pk
+        relation_group_id = User_Group_Relation.objects.filter(user_id=int(registered_users_id))
+        for r in relation_group_id:
+            print('555555',r.group_id.id)
+        reply = json.dumps({'email': email, 'userExist': True, 'isAdmin':status})
+    except:
+        reply=json.dumps({'email':email, 'userExist':False, 'isAdmin':status})
+    #{'allow': [<paths>], 'deny': [<paths>], 'isAdmin': true|false}
+    return HttpResponse(reply)
 
 
 

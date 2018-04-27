@@ -88,7 +88,7 @@ location / {
     #try_files $uri $uri/ =404;
 
 ```
-Inside the location / {   add the following code
+Inside the location / {   add the following code and save the file
 ```
 proxy_set_header        Host $host;
 proxy_set_header        X-Real-IP $remote_addr;

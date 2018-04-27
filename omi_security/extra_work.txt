@@ -33,6 +33,17 @@ Things To DO:
     >>>>>>>>>>>>>>>>>>>>>>>Need to add email in cookie
     Need to add interface for json reply to OMI node
 
+Need to ask toumas:
+    What is the URL that OMI module will call for query of authorization "http://127.0.0.1/omi_authquery?email=aishasaeed62@gmail.com"
+    How OMI module will send email address of user
+    Is this formation of cookie what i have made is fine
+    How to add permission for users in omi security module
+
+
+
+
+
+
 
 
 
