@@ -28,29 +28,29 @@ def home(request):
 @login_required
 @csrf_protect
 def authmodule(request):
-    #if request.user.is_superuser:
-    if request.method == 'POST':
-        users_added = request.POST.getlist('users_ingroup')
-        action = request.POST['action']
-        if action == 'addgroup':
-            form = GroupForm(request.POST)
-            if form.is_valid():
-                form.save()
-            group_added_id = Group.objects.get(group_name=request.POST["group_name"])
-            for user in users_added:
-                instance = User_Group_Relation()
-                instance.user_id = Registered_Users.objects.get(id=int(user))
-                instance.group_id = group_added_id
-                instance.save()
-        elif action == 'adduser':
-            form = Registered_UsersForm(request.POST)
-            if form.is_valid():
-                form.save()
-    registered_users = Registered_Users.objects.all()
-    registered_groups = Group.objects.all()
-    return render(request, "authmodule.html",{"list_users":registered_users, "list_groups":registered_groups})
-    #else:
-    #    return redirect('home')
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            users_added = request.POST.getlist('users_ingroup')
+            action = request.POST['action']
+            if action == 'addgroup':
+                form = GroupForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                group_added_id = Group.objects.get(group_name=request.POST["group_name"])
+                for user in users_added:
+                    instance = User_Group_Relation()
+                    instance.user_id = Registered_Users.objects.get(id=int(user))
+                    instance.group_id = group_added_id
+                    instance.save()
+            elif action == 'adduser':
+                form = Registered_UsersForm(request.POST)
+                if form.is_valid():
+                    form.save()
+        registered_users = Registered_Users.objects.all()
+        registered_groups = Group.objects.all()
+        return render(request, "authmodule.html",{"list_users":registered_users, "list_groups":registered_groups})
+    else:
+        return redirect('home')
 
 
 
