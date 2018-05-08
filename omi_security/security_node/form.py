@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from security_node.models import Group, User_Group_Relation, Rule, Registered_Users
+from security_node.models import Group, User_Group_Relation, Rule #Registered_Users
 
 
 
@@ -49,7 +49,7 @@ class UserForm(forms.ModelForm):
     '''
 
 
-
+"""
 class Registered_UsersForm(forms.ModelForm):
     username = forms.CharField(min_length=6, label='Username', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
     email = forms.EmailField(label='Email', max_length=64, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
@@ -57,7 +57,7 @@ class Registered_UsersForm(forms.ModelForm):
     class Meta:
         fields = ['username', 'email']
         model = Registered_Users
-
+"""
 
 class GroupForm(forms.ModelForm):
     group_name = forms.CharField(min_length=6, label='Username', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'new_group'}))

@@ -2,9 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse
-from security_node.models import Group, User_Group_Relation, Rule, Registered_Users
+from security_node.models import Group, User_Group_Relation, Rule
 from django.contrib.auth.models import User
-from security_node.form import UserForm, Registered_UsersForm, GroupForm
+from security_node.form import UserForm, GroupForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
@@ -39,16 +39,18 @@ def authmodule(request):
                 group_added_id = Group.objects.get(group_name=request.POST["group_name"])
                 for user in users_added:
                     instance = User_Group_Relation()
-                    instance.user_id = Registered_Users.objects.get(id=int(user))
+                    #instance.user_id = Registered_Users.objects.get(id=int(user))
+                    instance.user_id = User.objects.get(id=int(user))
                     instance.group_id = group_added_id
                     instance.save()
-            elif action == 'adduser':
-                form = Registered_UsersForm(request.POST)
-                if form.is_valid():
-                    form.save()
-        registered_users = Registered_Users.objects.all()
+            #elif action == 'adduser':
+                #form = Registered_UsersForm(request.POST)
+                #if form.is_valid():
+                    #form.save()
+        #registered_users = Registered_Users.objects.all()
+        users = User.objects.all()
         registered_groups = Group.objects.all()
-        return render(request, "authmodule.html",{"list_users":registered_users, "list_groups":registered_groups})
+        return render(request, "authmodule.html",{"list_users":users, "list_groups":registered_groups})
     else:
         return redirect('home')
 
