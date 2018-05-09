@@ -29,6 +29,7 @@ def home(request):
 @csrf_protect
 def authmodule(request):
     if request.user.is_superuser:
+        message = ''
         if request.method == 'POST':
             users_added = request.POST.getlist('users_ingroup')
             action = request.POST['action']
@@ -36,6 +37,8 @@ def authmodule(request):
                 form = GroupForm(request.POST)
                 if form.is_valid():
                     form.save()
+                else:
+                    message = form.errors['group_name'].as_text()
                 group_added_id = Group.objects.get(group_name=request.POST["group_name"])
                 for user in users_added:
                     instance = User_Group_Relation()
@@ -48,9 +51,9 @@ def authmodule(request):
                 #if form.is_valid():
                     #form.save()
         #registered_users = Registered_Users.objects.all()
-        users = User.objects.all()
+        users = User.objects.filter(is_superuser=False)
         registered_groups = Group.objects.all()
-        return render(request, "authmodule.html",{"list_users":users, "list_groups":registered_groups})
+        return render(request, "authmodule.html",{"list_users":users, "list_groups":registered_groups, 'errormessage':message })
     else:
         return redirect('home')
 

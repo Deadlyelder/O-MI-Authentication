@@ -25,7 +25,7 @@ User.objects.all().delete()
 
 
 Things To DO:
-    Need to show error on authmodule page on addition of duplicate user or duplicate group
+    >>>>>>>>>>>>>>>>>>>>>>Need to show error on authmodule page on addition of duplicate group
     Need to edit group users
     Need to add option to delete users
     Need to add option to delete group

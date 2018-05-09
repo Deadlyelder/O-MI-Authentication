@@ -9,7 +9,7 @@ class Registered_Users(models.Model):
 """
 
 class Group(models.Model):
-    group_name = models.CharField(max_length=200, unique=True)
+    group_name = models.CharField(max_length=200, unique=True, error_messages={'unique':"This group name has already been registered."})
 
 
 class User_Group_Relation(models.Model):
