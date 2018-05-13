@@ -13,16 +13,23 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 import json
+import jwt
 
 
 @login_required
 def home(request):
-    #user = request.user
-    #return HttpResponse("Hello, " + str(user)+ ". You're at the security_node index.")
     response = render(request, "home.html")
-    response.set_cookie("email", request.user.email)
+    token = jwt.encode({'email': request.user.email, 'is_superuser':request.user.is_superuser}, 'MySecretKey', algorithm='HS256')
+    #response.set_cookie("email", request.user.email)
+    response.set_cookie("token", token)
     return response
-    #return render(request, "home.html")
+
+
+@login_required
+def about(request):
+    token = request.COOKIES.get('token')
+    token = jwt.decode(eval(token), 'MySecretKey', algorithm=['HS256'])
+    return render(request, "about.html",{'token':token})
 
 
 @login_required
@@ -80,9 +87,7 @@ def login(request):
                 raw_password = form.cleaned_data.get('password')
                 user = authenticate(username=username, password=raw_password)
                 auth_login(request, user)
-                response = redirect('home')
-                response.set_cookie("email", user.email)
-                return response
+                return redirect('home')
         else:
             form = AuthenticationForm()
         return render(request, "login.html", {'form': form})

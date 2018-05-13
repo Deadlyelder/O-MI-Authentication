@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    Hello {{request.user}}, you are
+        {% if user.is_superuser %}
+            superuser
+        {% else %}
+            normal user
+        {% endif %}
+
+    <br>
+    This is about page and project is about OMI security developed by Aisha.
+    <br><br>The printed token is <br><br>{{token}}
+</div>
+
+{% endblock %}
+
+

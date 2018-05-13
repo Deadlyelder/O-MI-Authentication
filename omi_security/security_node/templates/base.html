@@ -23,6 +23,7 @@
             <a href="{% url 'home' %}">Home</a>
         {% if user.is_authenticated %}
             <a href="{% url 'authmodule' %}">Authorization Module</a>
+            <a href="{% url 'about' %}">About</a>
             <a href="{% url 'logout' %}">Log out {{request.user}}</a>
         {% else %}
             <a href="{% url 'login' %}">Login</a>
