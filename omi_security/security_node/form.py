@@ -60,7 +60,7 @@ class Registered_UsersForm(forms.ModelForm):
 """
 
 class GroupForm(forms.ModelForm):
-    group_name = forms.CharField(min_length=6, label='Username', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'new_group'}))
+    group_name = forms.CharField(min_length=6, label='new_group', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'new_group'}))
     class Meta:
         fields = ['group_name']
         model = Group

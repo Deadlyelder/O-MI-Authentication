@@ -16,53 +16,56 @@ import json
 import jwt
 
 
-@login_required
+@login_required                                                             #check first if user is logged in or not
 def home(request):
-    response = render(request, "home.html")
-    token = jwt.encode({'email': request.user.email, 'is_superuser':request.user.is_superuser}, 'MySecretKey', algorithm='HS256')
+    response = render(request, "home.html")                                 #checks and prints if user is superuser or a normal user
+    token = jwt.encode({'email': request.user.email, 'is_superuser':request.user.is_superuser}, 'MySecretKey', algorithm='HS256')       #Creates jwt token
     #response.set_cookie("email", request.user.email)
-    response.set_cookie("token", token)
-    return response
+    response.set_cookie("token", token)                                     #use the token in session cookie
+    return response                                                         #return cookie to client/user
 
 
 @login_required
-def about(request):
+def about(request):                                                         #now when user tries to access/request the "about" page, the token is send by client
     token = request.COOKIES.get('token')
-    token = jwt.decode(eval(token), 'MySecretKey', algorithm=['HS256'])
-    return render(request, "about.html",{'token':token})
+    token = jwt.decode(eval(token), 'MySecretKey', algorithm=['HS256'])     #decode the token
+    return render(request, "about.html",{'token':token})                    #send the decoded token to about page
+
+
 
 
 @login_required
 @csrf_protect
 def authmodule(request):
-    if request.user.is_superuser:
-        message = ''
+    if request.user.is_superuser:                                           #only super user can access the webclient and not the normal user
+        message = ''                                                        #initialize a variable "message" and make it empty
         if request.method == 'POST':
-            users_added = request.POST.getlist('users_ingroup')
-            action = request.POST['action']
-            if action == 'addgroup':
-                form = GroupForm(request.POST)
-                if form.is_valid():
-                    form.save()
+            users_added = request.POST.getlist('users_ingroup')             #get list of user ids added in the group
+            action = request.POST['action']                                 #gets the save button's name = action into the "action" variable
+            if action == 'addgroup':                                        #if action value is "add group"
+                form = GroupForm(request.POST)                              #get the GroupForm defined in forms.py
+                if form.is_valid():                                         #check validity of the GroupForm
+                    form.save()                                             #save values in Group table
                 else:
-                    message = form.errors['group_name'].as_text()
-                group_added_id = Group.objects.get(group_name=request.POST["group_name"])
+                    message = form.errors['group_name'].as_text()           #if validity fails, get error message as text form and save in message variable
+                group_added_id = Group.objects.get(group_name=request.POST["group_name"])   #gets group id of the group just added
+                #print('11111111111', group_added_id)
                 for user in users_added:
-                    instance = User_Group_Relation()
+                    instance = User_Group_Relation()                        #get User_Group_Relation table
                     #instance.user_id = Registered_Users.objects.get(id=int(user))
-                    instance.user_id = User.objects.get(id=int(user))
-                    instance.group_id = group_added_id
-                    instance.save()
+                    instance.user_id = User.objects.get(id=int(user))       #get user id in User_Group_Relation table by matching user id of User table and in users-added list of user ids
+                    instance.group_id = group_added_id                      #get group id in User_Group_Relation table
+                    instance.save()                                         #save values in table
             #elif action == 'adduser':
                 #form = Registered_UsersForm(request.POST)
                 #if form.is_valid():
                     #form.save()
         #registered_users = Registered_Users.objects.all()
-        users = User.objects.filter(is_superuser=False)
-        registered_groups = Group.objects.all()
-        return render(request, "authmodule.html",{"list_users":users, "list_groups":registered_groups, 'errormessage':message })
+        users = User.objects.filter(is_superuser=False)                     #get all users who are not super users
+        registered_groups = Group.objects.all()                             #get all groups
+        return render(request, "authmodule.html",{"list_users":users, "list_groups":registered_groups, 'errormessage':message })    #send users, groups and error message(if any) to authmodule.html file
     else:
-        return redirect('home')
+        return redirect('home')                                             #if user is not a superuser, redirect him to home page
 
 
 
@@ -79,27 +82,27 @@ def login(request):
     """
     View used for logging in to the service
     """
-    if not request.user.is_authenticated:
-        if request.method == 'POST':
-            form = AuthenticationForm(data=request.POST)
-            if form.is_valid():
+    if not request.user.is_authenticated:                             #if user is not logged in
+        if request.method == 'POST':                                  #after filling username and password fields and pressing login button, a post request is made
+            form = AuthenticationForm(data=request.POST)              #django.contrib.auth provides AuthenticationForm to which requested data is send
+            if form.is_valid():                                       #is_valid() method to run validation and return a boolean designating whether the data was valid
                 username = form.cleaned_data.get('username')
                 raw_password = form.cleaned_data.get('password')
-                user = authenticate(username=username, password=raw_password)
-                auth_login(request, user)
-                return redirect('home')
+                user = authenticate(username=username, password=raw_password)   # authenticate() to verify username and password
+                auth_login(request, user)                             #built-in login function
+                return redirect('home')                               #after successful login, user redirected to home page
         else:
             form = AuthenticationForm()
-        return render(request, "login.html", {'form': form})
+        return render(request, "login.html", {'form': form})          #if no post method, then go to the login page again
     else:
-        return redirect('home')
+        return redirect('home')                                       #if user is already logged in , redirect him to home page
 
-def signup(request):
+def signup(request):                                                 #function used for sign-up
     if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        form = UserForm(request.POST)                                #UserForm is defined in forms.py
+        if form.is_valid():                                          #Checks validity
+            form.save()                                              #saves the credentials in database
+            return redirect('home')                                  #redirected the user to home where he will be asked to login (after sign-up)
     else:
         form = UserForm()
     return render(request, 'signup.html', {'form': form})
@@ -107,23 +110,26 @@ def signup(request):
 
 def omi_authquery(request):
     email = request.GET.get('email')
+    token = request.COOKIES.get('token')
 
-    try:
-        status=False
-        user = User.objects.get(email=email)
-        if user.is_superuser:
-            status=True
+    #try:
+    status=False                                                #set a variable "status" to false initially
+    decoded_token = jwt.decode(eval(token), 'MySecretKey', algorithm=['HS256'])
+    decoded_email = decoded_token['email']
+    print(decoded_token, '------------', decoded_email)
+    user = User.objects.get(email=email)                        #get the user from User table by matching with requested email address
+    if user.is_superuser:                                       #if he is a super user then status is changed to true
+        status=True
 
-        registered_users_id = Registered_Users.objects.get(email=email).pk
-        relation_group_id = User_Group_Relation.objects.filter(user_id=int(registered_users_id))
-        for r in relation_group_id:
-            print('555555',r.group_id.id)
-        reply = json.dumps({'email': email, 'userExist': True, 'isAdmin':status})
-    except:
-        reply=json.dumps({'email':email, 'userExist':False, 'isAdmin':status})
+    users_id = User.objects.get(email=email).pk                                              #gets user id from the User  table after matching with requested email address
+    relation_group_id = User_Group_Relation.objects.filter(user_id=int(users_id))            #gets group id of in which that user belongs
+    for r in relation_group_id:
+        print('555555',r.group_id.id)
+    reply = json.dumps({'email': email, 'userExist': True, 'isAdmin':status})                #making json response if user is in a group: user exists status, admin status and his email address
+    #except:
+        #reply=json.dumps({'email':email, 'userExist':False, 'isAdmin':status})                  #making json response if user is not in a group: user exists status, admin status and his email address
     #{'allow': [<paths>], 'deny': [<paths>], 'isAdmin': true|false}
     return HttpResponse(reply)
-
 
 
 
