@@ -19,7 +19,8 @@ import jwt
 @login_required                                                             #check first if user is logged in or not
 def home(request):
     response = render(request, "home.html")                                 #checks and prints if user is superuser or a normal user
-    token = jwt.encode({'email': request.user.email, 'is_superuser':request.user.is_superuser}, 'MySecretKey', algorithm='HS256')       #Creates jwt token
+    token = jwt.encode({'email': request.user.email, 'is_superuser': request.user.is_superuser}, 'MySecretKey', algorithm='HS256').decode('utf-8') #The decode call here doesn't decode the jwt, it converts the encoded jwt from a byte string to a utf-8 string.
+    #token = jwt.encode({'email': request.user.email, 'is_superuser':request.user.is_superuser}, 'MySecretKey', algorithm='HS256')       #Creates jwt token
     #response.set_cookie("email", request.user.email)
     response.set_cookie("token", token)                                     #use the token in session cookie
     return response                                                         #return cookie to client/user
@@ -28,7 +29,9 @@ def home(request):
 @login_required
 def about(request):                                                         #now when user tries to access/request the "about" page, the token is send by client
     token = request.COOKIES.get('token')
-    token = jwt.decode(eval(token), 'MySecretKey', algorithm=['HS256'])     #decode the token
+    print(token)
+    token = jwt.decode(token, 'MySecretKey', algorithm=['HS256'])            #decode the token
+    #token = jwt.decode(eval(token), 'MySecretKey', algorithm=['HS256'])
     return render(request, "about.html",{'token':token})                    #send the decoded token to about page
 
 
@@ -75,6 +78,9 @@ def logout(request):
     """
     if request.user.is_authenticated:
         auth_logout(request)
+        response = redirect('home')
+        response.delete_cookie('token')
+        return response
     return redirect('home')
 
 
@@ -111,23 +117,22 @@ def signup(request):                                                 #function u
 def omi_authquery(request):
     email = request.GET.get('email')
     token = request.COOKIES.get('token')
-
+    print('--------------',token)
     #try:
     status=False                                                #set a variable "status" to false initially
-    decoded_token = jwt.decode(eval(token), 'MySecretKey', algorithm=['HS256'])
-    decoded_email = decoded_token['email']
-    print(decoded_token, '------------', decoded_email)
     user = User.objects.get(email=email)                        #get the user from User table by matching with requested email address
     if user.is_superuser:                                       #if he is a super user then status is changed to true
         status=True
-
+    decoded_token = jwt.decode(token, 'MySecretKey', algorithm=['HS256'])
+    decoded_email = decoded_token['email']
+    print(decoded_token, '------********------', decoded_email)
     users_id = User.objects.get(email=email).pk                                              #gets user id from the User  table after matching with requested email address
     relation_group_id = User_Group_Relation.objects.filter(user_id=int(users_id))            #gets group id of in which that user belongs
     for r in relation_group_id:
         print('555555',r.group_id.id)
     reply = json.dumps({'email': email, 'userExist': True, 'isAdmin':status})                #making json response if user is in a group: user exists status, admin status and his email address
     #except:
-        #reply=json.dumps({'email':email, 'userExist':False, 'isAdmin':status})                  #making json response if user is not in a group: user exists status, admin status and his email address
+        #reply=json.dumps({'email':email, 'userExist':False, 'isAdmin':status})              #making json response if user is not in a group: user exists status, admin status and his email address
     #{'allow': [<paths>], 'deny': [<paths>], 'isAdmin': true|false}
     return HttpResponse(reply)
 
