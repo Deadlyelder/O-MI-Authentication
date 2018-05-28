@@ -18,6 +18,9 @@ import jwt
 
 @login_required                                                                                           #check first if user is logged in or not
 def home(request):
+    """
+    View used for home page
+    """
     response = render(request, "home.html")                                                               #checks and prints if user is superuser or a normal user
     token = jwt.encode({'email': request.user.email, 'is_superuser': request.user.is_superuser}, 'MySecretKey', algorithm='HS256').decode('utf-8') #Creates jwt token. The decode call here doesn't decode the jwt, it converts the encoded jwt from a byte string to a utf-8 string.
     response.set_cookie("token", token)                                                                   #use the token in session cookie
@@ -26,6 +29,9 @@ def home(request):
 
 @login_required
 def about(request):                                                                                       #now when user tries to access/request the "about" page, the token is send by client
+    """
+    View used for about page
+    """
     token = request.COOKIES.get('token')
     print(token)
     token_decoded = jwt.decode(token, 'MySecretKey', algorithm=['HS256'])                                 #decode the token
@@ -37,6 +43,9 @@ def about(request):                                                             
 @login_required
 @csrf_protect
 def authmodule(request):
+    """
+    View used for adding groups and users in groups
+    """
     if request.user.is_superuser:                                           #only super user can access the webclient and not the normal user
         message = ''                                                        #initialize a variable "message" and make it empty
         if request.method == 'POST':
@@ -48,7 +57,7 @@ def authmodule(request):
                     form.save()                                             #save values in Group table
                 else:
                     message = form.errors['group_name'].as_text()           #if validity fails, get error message as text form and save in message variable
-                group_added_id = Group.objects.get(group_name=request.POST["group_name"])   #gets group id of the group just added
+                group_added_id = Group.objects.get(group_name=request.POST["group_name"])   #gets group object of the group just added
                 for user in users_added:
                     instance = User_Group_Relation()                        #get User_Group_Relation table
                     instance.user_id = User.objects.get(id=int(user))       #get user id in User_Group_Relation table by matching user id of User table and in users-added list of user ids
@@ -88,12 +97,15 @@ def login(request):
                 auth_login(request, user)                             #built-in login function
                 return redirect('home')                               #after successful login, user redirected to home page
         else:
-            form = AuthenticationForm()
-        return render(request, "login.html", {'form': form})          #if no post method, then go to the login page again
+            form = AuthenticationForm()                               #when user visiting the login page initially
+        return render(request, "login.html", {'form': form})
     else:
         return redirect('home')                                       #if user is already logged in , redirect him to home page
 
-def signup(request):                                                 #function used for sign-up
+def signup(request):
+    """
+    View used for sign-up in to the service
+    """
     if request.method == 'POST':
         form = UserForm(request.POST)                                #UserForm is defined in forms.py
         if form.is_valid():                                          #Checks validity
