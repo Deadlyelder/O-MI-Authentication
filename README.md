@@ -1,6 +1,16 @@
 OMI Project - Security Module
 -----------------------------
 
+### To install pycharm, use the following method
+
+To install pycharm, use the following commands:
+
+```
+$ sudo add-apt-repository ppa:mystic-mirage/pycharm
+$ sudo apt update
+$ sudo apt install pycharm-community
+```
+
 
 ### Setup Process for owner
 
@@ -44,20 +54,11 @@ $ cd OMI_Security_Module
 OMI_Security_Module$ sudo bash install.sh
 ```
 
-Now going inside the project and running the django server on port 80
+Now going inside the project and running the django server on port 8000.
+This world help to configure nginx as proxy and run nginx on port 80.
 ```
 OMI_Security_Module$ cd omi_security
-OMI_Security_Module/omi_security$ sudo python3 manage.py runserver 0:80
-```
-
-### To install pycharm, use the following method
-
-To install pycharm, use the following commands:
-
-```
-$ sudo add-apt-repository ppa:mystic-mirage/pycharm
-$ sudo apt update
-$ sudo apt install pycharm-community
+OMI_Security_Module/omi_security$ sudo python3 manage.py runserver 0:8000
 ```
 
 
