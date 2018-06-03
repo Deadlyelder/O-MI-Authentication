@@ -124,6 +124,8 @@ def omi_authquery(request):
     '''
     email = request.GET.get('email')                                                    #get the email address from URL
     token = request.GET.get('token')                                                    #get the token from URL
+    if not token: token = requests.GET.get('access_token')
+    
     if token:                                                                           #in case token is provided
         try:
             decoded_token = jwt.decode(token, 'MySecretKey', algorithm=['HS256'])       #decode the jwt token
