@@ -122,7 +122,7 @@ def omi_authquery(request):
     :param request: request from browser
     :return: returns the details of user or return error if token is invalid or email address doesnot exists in database
     '''
-    email = request.GET.get('email')                                                    #get the email address from URL
+    #email = request.GET.get('email')                                                    #get the email address from URL
     token = request.GET.get('token')                                                    #get the token from URL
     if not token: token = requests.GET.get('access_token')
     
@@ -133,14 +133,14 @@ def omi_authquery(request):
             user = User.objects.get(email=decoded_email)                                # get the user from User table by matching with decoded email address
         except:
             reply = json.dumps({'message': 'Invalid Token or No user Exists'})          #if invalid token is provided, sends error message
-            return HttpResponse(reply)
-    elif email:                                                                         #in case email is provided
-        try:
-            user = User.objects.get(email=email)                                        # get the user from User table by matching with requested email address
-        except:
-            reply = json.dumps({'message': 'No User Exist with this email address'})    # if invalid email is provided, sends error message
-            return HttpResponse(reply)
-    reply = json.dumps({'email': user.email, 'userExist': True, 'isAdmin':user.is_superuser})   #making json response: user email address, user exists status, his admin status
+            return HttpResponse(reply, status=400)
+    #elif email:                                                                         #in case email is provided
+    #    try:
+    #        user = User.objects.get(email=email)                                        # get the user from User table by matching with requested email address
+    #    except:
+    #        reply = json.dumps({'message': 'No User Exist with this email address'})    # if invalid email is provided, sends error message
+    #        return HttpResponse(reply)
+    reply = json.dumps({'email': user.email, 'isAdmin':user.is_superuser})   #making json response: user email address, user exists status, his admin status
     return HttpResponse(reply)
     #{'allow': [<paths>], 'deny': [<paths>], 'isAdmin': true|false}
 
