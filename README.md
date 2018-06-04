@@ -12,10 +12,10 @@ authAPI.v2 {
   enable = true
 
   # Url to do authentication (checking if the consumer have valid credentials or session)
-  authentication-url = "http://localhost:8000/omi_authquery"
+  authentication.url = "http://localhost:8000/omi_authquery"
 
   # Url to do authorization (checking what data a given user has permissions to read or write)
-  authorization-url = "<put authorization module url here>"
+  authorization.url = "<put authorization module url here>"
 }
 ```
 
