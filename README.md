@@ -1,67 +1,37 @@
-OMI Project - Security Module
------------------------------
+OMI Project - Authentication module
+===============================
 
 
-### Setup Process for owner
+Basic configuration
+-------
 
-Create a new virtual machine with operating system Ubuntu 64-bit and minimum version of ubuntu is 16
-Now open the terminal and create a directory of .ssh and go inside that directory
-
+1. Setup authentication settings in `omi_security/omi_security/settings.py`
+2. In O-MI Node `/etc/o-mi-node/application.conf`, inside `omi-service` object:
 ```
-$ mkdir .ssh
-$ cd .ssh
-```
+authAPI.v2 {
+  enable = true
 
-Now run the following scp command to copy the private and public keys from server to avoid the process of generating keys and adding them to git.
-Provide the password for your account of saeeda2
+  # Url to do authentication (checking if the consumer have valid credentials or session)
+  authentication-url = "http://localhost:8000/omi_authquery"
 
-```
-.ssh$ scp saeeda2@kosh.aalto.fi:/u/92/saeeda2/unix/sshkeys/* .
-```
-
-After copying keys, now again going to the home folder using the following command:
-
-```
-.ssh$ cd
-```
-
-Now install git using the following command:
-
-```
-$ sudo apt-get install git
-```
-
-After installing git, now clone the project using the following command and also set the credentials:
-```
-$ git clone git@version.aalto.fi:saeeda2/OMI_Security_Module.git
-$ git config --global user.email "aisha.saeed@aalto.fi"
-$ git config --global user.name "Aisha Saeed"
-```
-
-Now going side the project and using bash command to install the requirements:
-```
-$ cd OMI_Security_Module
-OMI_Security_Module$ sudo bash install.sh
-```
-
-Now going inside the project and running the django server on port 80
-```
-OMI_Security_Module$ cd omi_security
-OMI_Security_Module/omi_security$ sudo python3 manage.py runserver 0:80
-```
-
-### To install pycharm, use the following method
-
-To install pycharm, use the following commands:
-
-```
-$ sudo add-apt-repository ppa:mystic-mirage/pycharm
-$ sudo apt update
-$ sudo apt install pycharm-community
+  # Url to do authorization (checking what data a given user has permissions to read or write)
+  authorization-url = "<put authorization module url here>"
+}
 ```
 
 
-### To configure NGINX as proxy, use the following method
+Running
+-------
+
+1. Install python and pip: `sudo apt-get install python3 python3-pip`
+1. Install dependencies: `pip3 install -r requirements.txt`
+2. Run: `python3 omi_security/manage.py runserver 0:8000`
+
+
+
+To configure NGINX as proxy, use the following method
+------------------------------------------------
+
 
 Install nginx using the following command:
 
@@ -106,7 +76,11 @@ $ sudo service nginx reload
 Now you can access the front page of django using 127.0.0.1
 Django server should be running on 127.0.0.1:8000
 
-### To install and configure Openldap and phpldapadmin , use the following method
+
+
+To install and configure Openldap and phpldapadmin , use the following method
+-----------------------------------------------------------------
+
 
 Installing ldap server (enter root password at administrator password)
 ```
