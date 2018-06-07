@@ -6,6 +6,7 @@ Basic configuration
 -------
 
 1. Setup authentication settings in `omi_security/omi_security/settings.py`
+2. Install O-MI Node compiled from `feature_authapiv2` branch in O-MI Node (It will be released in near-future release)
 2. In O-MI Node `/etc/o-mi-node/application.conf`, set `omi-service.authAPI.v2.authentication-url`:
 ```
 authAPI.v2 {
