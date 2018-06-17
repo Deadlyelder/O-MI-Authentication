@@ -33,7 +33,6 @@ def about(request):                                                             
     View used for about page
     """
     token = request.COOKIES.get('token')
-    print(token)
     token_decoded = jwt.decode(token, 'MySecretKey', algorithm=['HS256'])                                 #decode the token
     return render(request, "about.html",{'token_decoded':token_decoded,'token':token})                    #send the decoded token to about page
 
