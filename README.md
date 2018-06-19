@@ -58,7 +58,7 @@ location / {
     #try_files $uri $uri/ =404;
 
 ```
-Inside the location / {   add the following code and save the file
+Inside the location section of the file add the following code and save
 ```
 proxy_set_header        Host $host;
 proxy_set_header        X-Real-IP $remote_addr;
@@ -86,12 +86,13 @@ Install the ldap server (enter root password at administrator password)
 sudo apt-get install slapd ldap-utils
 ```
 
-After installation, go to this file and change the lined mentioned:
+After installation, go to this file and change the lines mentioned:
 ```bash
-sudo gedit /etc/ldap/ldap.conf
+$ sudo gedit /etc/ldap/ldap.conf
 ...
 BASE	dc=ldap,dc=com
 URI	ldap://localhost:389
+...
 ```
 
 Reconfigure slapd
