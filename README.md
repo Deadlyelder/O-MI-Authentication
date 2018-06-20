@@ -21,32 +21,31 @@ authAPI.v2 {
 ```
 
 
-Running
+Initial dependencies
 -------
 
 1. Install python and pip: `sudo apt-get install python3 python3-pip`
-1. Install dependencies: `pip3 install -r requirements.txt`
-2. Run: `python3 omi_security/manage.py runserver 0:8000`
-
+2. Install other dependencies: `sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev python-ldap django-auth-ldap`
+1. Install python library: `pip3 install -r requirements.txt`
 
 
 To configure NGINX as proxy, use the following method
 ------------------------------------------------
 
+Install the nginx (if its not installed) using the following:
 
-Install nginx using the following command:
-
-```
+```bash
 $ sudo apt-get install nginx
 ```
-Now go to the following folder and edit the default file
 
-```
+Next edit the default nginx settings using the following:
+
+```bash
 $ cd /etc/nginx/sites-enabled
 /etc/nginx/sites-enabled$ sudo nano default
 ```
 
-In the default file: comment out the following lines
+In the default file, comment out the following lines
 ```
 #root /var/www/html;
 
@@ -59,7 +58,7 @@ location / {
     #try_files $uri $uri/ =404;
 
 ```
-Inside the location / {   add the following code and save the file
+Inside the location section of the file add the following code and save
 ```
 proxy_set_header        Host $host;
 proxy_set_header        X-Real-IP $remote_addr;
@@ -70,41 +69,39 @@ proxy_read_timeout  90;
 
 ```
 
-Now restart nginx using following command:
-```
+Now restart the nginx using following command:
+
+```bash
 $ sudo service nginx reload
 ```
-Now you can access the front page of django using 127.0.0.1
-Django server should be running on 127.0.0.1:8000
 
+The front page based on django is now accessible at 127.0.0.1 on port 8000 i.e. `127.0.0.1:800`
 
-
-To install and configure Openldap and phpldapadmin , use the following method
+Install and configure Openldap and phpldapadmin
 -----------------------------------------------------------------
 
+Install the ldap server (enter root password at administrator password)
 
-Installing ldap server (enter root password at administrator password)
-```
+```bash
 sudo apt-get install slapd ldap-utils
 ```
 
-After installation, go to this file:
-```
-sudo gedit /etc/ldap/ldap.conf
-```
-
-Change only these lines as:
-```
+After installation, go to this file and change the lines mentioned:
+```bash
+$ sudo gedit /etc/ldap/ldap.conf
+...
 BASE	dc=ldap,dc=com
 URI	ldap://localhost:389
+...
 ```
 
 Reconfigure slapd
-```
+```bash
 sudo dpkg-reconfigure slapd
 ```
 
-And make the following choices:
+During the reconfiguration, you need to select the following:
+
 ```
 select "NO" to Omit Openldap server configuration
 set domain name as: ldap.com
@@ -115,66 +112,63 @@ select NO when asked "Remove the database when slapd is purged"
 select YES for move old database
 select NO to allow ldapv2 protocol
 ```
-To test openldap on commandline
-```
+
+To test openldap on the command-line input the following 
+
+```bash
 sudo ldapsearch -x
 ```
 
-Install  phpLDAPadmin package
-```
-sudo apt-get install phpldapadmin
-```
+Now install the phpLDAPadmin package and access the main configuration file:
 
-Open the main configuration file
+```bash
+$ sudo apt-get install phpldapadmin
+$ sudo gedit /etc/phpldapadmin/config.php
 ```
-sudo gedit /etc/phpldapadmin/config.php
-```
+In the `config.php` file, change the lines as:
 
-In config.php file, change the lines as:
-```
+```php
 $servers->setValue('server','host','enter host IP address here');
 $servers->setValue('server','base',array('dc=ldap,dc=com'));
 $servers->setValue('login','bind_id','cn=admin,dc=ldap,dc=com');
 ```
-In config.php file, uncomment the following line and make it true:
-```
+and uncomment the following line while changing its parameter to true:
+
+```php
 $config->custom->appearance['hide_template_warning'] = true;
 ```
 
-Start apache2 service:
+Finally start the apache2 service:
+
+```bash
+$ sudo service apache2 start
 ```
-sudo service apache2 start
-```
-phpldapadmin can be accessed as http://host/phpldapadmin/.
+
+The `phpldapadmin` is now accessible at http://host/phpldapadmin/.
+
 Follow this link: https://www.techrepublic.com/article/how-to-populate-an-ldap-server-with-users-and-groups-via-phpldapadmin/.
 Create Organizational units ("groups" and "users"). Under "groups" create two posix groups "normal-users" and "superuser". Under "users" create generic user accounts,
 for example, I made 3 users (Hassaan, Maria and Ruman). Hassaan will be superuser so I added his memberUid in superuser group and other two users in normal-users
 group.
-In order to add email addresses, go to each user profile, select "Add new attribute" and add email from there. Another method is to do on command line as follows:
-```
+
+Now to add email address, you need to enter each user's profile select "Add new attribute" and add email from there. Another method from the command line is:
+
+```bash
 sudo ldapmodify -H ldap://localhost:389 -D cn=admin,dc=ldap,dc=com -x -W
 Enter LDAP Password:
 dn: cn=Ruman Khan,ou=users,dc=ldap,dc=com
 changetype: modify
 add: mail
 mail: ruman@aalto.fi
- ```
+```
 
-Now for integrating with django, install the following:
-```
-sudo apt-get install -y libldap2-dev
-sudo apt-get install -y python-dev
-sudo apt-get install -y libsasl2-dev
-sudo apt-get install -y python-pip
-sudo pip3 install python-ldap
-sudo pip3 install django-auth-ldap
-```
-Apache2 is using port 80. Run OMI security module using following command:
-```
+The O-MI security module can now be launched with the following:
+
+```bash
 python3 manage.py runserver 0:8000
 ```
-When you enter username and password of the user from Openldap directory,
-the user will be logged in and is added into the User table of Django (if not already exists).
+
+_Note:_ When you enter username and password of the user from Openldap directory, the user will be logged in and is added into the User table of Django (if not already exists).
 
 
 
