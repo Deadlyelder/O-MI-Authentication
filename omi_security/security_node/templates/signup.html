@@ -66,8 +66,23 @@
 
                   	<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-address-card-o"></i> Check if Superuser</span>
-                        <input autofocus="" class="form-control" id="id_is_superuser" name="is_superuser" type="checkbox"  {% if form.is_superuser.value %} value="{{form.is_superuser.value}}" {% endif %} />
+                        <input autofocus="" class="form-control" id="id_is_superuser" name="is_superuser" type="checkbox" onclick="myFunction()" {% if form.is_superuser.value %} value="{{form.is_superuser.value}}" {% endif %} />
 					</div>
+					<p id="demo"></p>
+					<script>
+					function myFunction() {
+    					var txt;
+    					var secret_code = "Iamsuperuser12345"
+    					var person = prompt("Please enter superuser secret code:");
+    					if (person != secret_code) {
+        					txt = "Please make sure that you have the rights to become a superuser of this app";
+        					document.getElementById("id_is_superuser").checked = false;
+    					} else {
+       						 txt = "User can register as a superuser";
+    					}
+    					document.getElementById("demo").innerHTML = txt;
+					}
+					</script>
 					<span class="help-block"></span>
 
                     <span class="help-block">{{form.non_field_errors.0}}</span>
