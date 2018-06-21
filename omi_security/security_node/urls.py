@@ -10,6 +10,7 @@ urlpatterns = [
     path(r'authmodule', views.authmodule, name='authmodule'),
     path(r'omi_authquery', views.omi_authquery, name='omi_authquery'),
     path(r'about', views.about, name='about'),
+    path(r'create_oauth_token', views.create_oauth_token, name='create_oauth_token'),
 
 
 ]

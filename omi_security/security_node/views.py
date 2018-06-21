@@ -14,6 +14,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 import json
 import jwt
+import time
+
+TOKEN_EXPIRY = 900   # Unit is seconds so it makes 15minutes
+
+
+def token_validator(request):
+    token = request.COOKIES.get('token')
+    try:
+        jwt.decode(token, 'MySecretKey', algorithm=['HS256'])                                 #decode the token
+        return True
+    except jwt.ExpiredSignature:
+        return False
 
 
 @login_required                                                                                           #check first if user is logged in or not
@@ -21,10 +33,9 @@ def home(request):
     """
     View used for home page
     """
-    response = render(request, "home.html")                                                               #checks and prints if user is superuser or a normal user
-    token = jwt.encode({'email': request.user.email, 'is_superuser': request.user.is_superuser}, 'MySecretKey', algorithm='HS256').decode('utf-8') #Creates jwt token. The decode call here doesn't decode the jwt, it converts the encoded jwt from a byte string to a utf-8 string.
-    response.set_cookie("token", token)                                                                   #use the token in session cookie
-    return response                                                                                       #return cookie to client/user
+    if not token_validator(request):
+        return redirect('logout')
+    return render(request, "home.html")
 
 
 @login_required
@@ -32,11 +43,25 @@ def about(request):                                                             
     """
     View used for about page
     """
+    if not token_validator(request):
+        return redirect('logout')
+
     token = request.COOKIES.get('token')
     token_decoded = jwt.decode(token, 'MySecretKey', algorithm=['HS256'])                                 #decode the token
     return render(request, "about.html",{'token_decoded':token_decoded,'token':token})                    #send the decoded token to about page
 
 
+@login_required
+def create_oauth_token(request):
+    """
+    View used for about page
+    """
+    response = redirect('home')
+    exp = time.time() + TOKEN_EXPIRY
+    token = jwt.encode({'email': request.user.email, 'is_superuser': request.user.is_superuser, "exp": exp},
+                       'MySecretKey', algorithm='HS256').decode('utf-8')
+    response.set_cookie("token", token)
+    return response
 
 
 @login_required
@@ -45,6 +70,10 @@ def authmodule(request):
     """
     View used for adding groups and users in groups
     """
+    if not token_validator(request):
+        return redirect('logout')
+
+
     if request.user.is_superuser:                                           #only super user can access the webclient and not the normal user
         message = ''                                                        #initialize a variable "message" and make it empty
         if request.method == 'POST':
@@ -94,7 +123,7 @@ def login(request):
                 raw_password = form.cleaned_data.get('password')
                 user = authenticate(username=username, password=raw_password)   # authenticate() to verify username and password
                 auth_login(request, user)                             #built-in login function
-                return redirect('home')                               #after successful login, user redirected to home page
+                return redirect('create_oauth_token')                               #after successful login, user redirected to home page
         else:
             form = AuthenticationForm()                               #when user visiting the login page initially
         return render(request, "login.html", {'form': form})
