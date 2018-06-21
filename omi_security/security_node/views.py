@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from security_node.models import Group, User_Group_Relation, Rule
 from django.contrib.auth.models import User
 from security_node.form import UserForm, GroupForm
@@ -132,16 +132,16 @@ def omi_authquery(request):
             decoded_email = decoded_token['email']                                      #get email from token
             user = User.objects.get(email=decoded_email)                                # get the user from User table by matching with decoded email address
         except:
-            reply = json.dumps({'message': 'Invalid Token or No user Exists'})          #if invalid token is provided, sends error message
-            return HttpResponse(reply, status=400)
+            reply = {'message': 'Invalid Token or No user Exists'}                      #if invalid token is provided, sends error message
+            return JsonResponse(reply, status=400)
     #elif email:                                                                         #in case email is provided
     #    try:
     #        user = User.objects.get(email=email)                                        # get the user from User table by matching with requested email address
     #    except:
     #        reply = json.dumps({'message': 'No User Exist with this email address'})    # if invalid email is provided, sends error message
     #        return HttpResponse(reply)
-    reply = json.dumps({'email': user.email, 'isAdmin':user.is_superuser})   #making json response: user email address, user exists status, his admin status
-    return HttpResponse(reply)
+    reply = {'email': user.email, 'isAdmin':user.is_superuser}                           #making json response: user email address, user exists status, his admin status
+    return JsonResponse(reply)
     #{'allow': [<paths>], 'deny': [<paths>], 'isAdmin': true|false}
 
 
