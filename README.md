@@ -7,16 +7,61 @@ Basic configuration
 
 1. Setup authentication settings in `omi_security/omi_security/settings.py`
 2. Install O-MI Node compiled from `feature_authapiv2` branch in O-MI Node (It will be released in near-future release)
-2. In O-MI Node `/etc/o-mi-node/application.conf`, set `omi-service.authAPI.v2.authentication-url`:
+2. In O-MI Node `/etc/o-mi-node/application.conf`, set `omi-service.authAPI.v2.authentication-url` and set parameters objects as below:
+
 ```
-authAPI.v2 {
+# This example is at root level, outside of any objects
+omi-service.authAPI.v2 {
   enable = true
 
   # Url to do authentication (checking if the consumer have valid credentials or session)
   authentication.url = "http://localhost:8000/omi_authquery"
 
   # Url to do authorization (checking what data a given user has permissions to read or write)
-  authorization.url = "<put authorization module url here>"
+  #authorization.url = "<put authorization module url here>"
+  
+  # Extract variable parameters from o-mi request or the http request transfering it
+  parameters.fromRequest {
+      # from omiEnvelope attributes
+      omiEnvelope {
+        # attribute = variableName
+        token = "token"
+      }
+      # from the Authorization header of http protocol
+      authorizationHeader {
+        # type = variableName
+        Bearer = "token"
+      }
+      ## from other http headers
+      #headers {
+      #  # headerName = variableName
+      #}
+      ## from query parameters of http URI
+      #query {
+      #  # queryParameterName = variableName
+      #  token = "token" # uncomment this if uri query parameter "token" should be allowed
+      #}
+  }
+  # put variables into authentication request (http GET)
+  parameters.toAuthentication {
+      query {
+        # parameterName = variableName  
+        token = "token"
+      }
+      # authorizationHeader {}
+      # headers {}
+      # jsonbody {}
+    }
+    # extract parameters from Authentication response
+    parameters.fromAuthentication {
+      # same as above + jsonbody property search
+      jsonbody {
+        # searchWord = variableName
+        email = "username"
+        #isAdmin = "isadmin"
+      }
+
+  }
 }
 ```
 
