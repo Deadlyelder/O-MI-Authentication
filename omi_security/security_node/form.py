@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from security_node.models import Group, User_Group_Relation, Rule #Registered_Users
+from security_node.models import Group, User_Group_Relation, Rule
 
 
 
@@ -13,6 +13,7 @@ class UserForm(forms.ModelForm):
     password = forms.CharField(min_length=6, max_length=32, label='Password', widget=forms.PasswordInput)
     password1 = forms.CharField(min_length=6, max_length=32, label='Password confirmation', widget=forms.PasswordInput)
     is_superuser = forms.BooleanField(label='Superuser', required=False)
+    superuser_secret = forms.CharField(label='superuser secret', max_length=64, required=False, widget=forms.TextInput(attrs={'placeholder': 'superuser secret'}))
     class Meta:
         fields = ['first_name', 'last_name', 'username', 'email', 'password', 'password1', 'is_superuser']
         model=User
@@ -24,6 +25,14 @@ class UserForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Password and Confirm Password does not match"
             )
+        if cleaned_data.get("is_superuser"):
+            cleaned_data = super(UserForm, self).clean()
+            superuser_secret =  cleaned_data.get("superuser_secret")
+            superuser_secret2 =  "Iamsuperuser12345"
+            if superuser_secret != superuser_secret2:
+                raise forms.ValidationError(
+                    "Please enter valid superuser secret or uncheck the superuser checkbox"
+                )
     def clean_email(self):
         email = self.cleaned_data.get('email')
         username = self.cleaned_data.get('username')
@@ -37,27 +46,7 @@ class UserForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-    '''
-    def clean_username(self):
-        # Since User.username is unique, this check is redundant,
-        username = self.cleaned_data["username"]
-        try:
-            User._default_manager.get(username=username)
-        except User.DoesNotExist:
-            return username
-        raise forms.ValidationError('Duplicate User Exists')
-    '''
 
-
-"""
-class Registered_UsersForm(forms.ModelForm):
-    username = forms.CharField(min_length=6, label='Username', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
-    email = forms.EmailField(label='Email', max_length=64, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
-
-    class Meta:
-        fields = ['username', 'email']
-        model = Registered_Users
-"""
 
 class GroupForm(forms.ModelForm):
     group_name = forms.CharField(min_length=6, label='new_group', max_length=32, widget=forms.TextInput(attrs={'placeholder': 'new_group'}))
