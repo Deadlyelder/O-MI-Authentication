@@ -70,7 +70,7 @@ Initial dependencies
 -------
 
 1. Install python and pip: `sudo apt-get install python3 python3-pip`
-2. Install other dependencies: `sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev python-ldap django-auth-ldap`
+2. Install other dependencies: `sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev python-ldap`
 1. Install python library: `pip3 install -r requirements.txt`
 
 
@@ -120,7 +120,7 @@ Now restart the nginx using following command:
 $ sudo service nginx reload
 ```
 
-The front page based on django is now accessible at 127.0.0.1 on port 8000 i.e. `127.0.0.1:800`
+The front page based on django is now accessible at 127.0.0.1 on port 8000 i.e. `127.0.0.1:8000`
 
 Install and configure Openldap and phpldapadmin
 -----------------------------------------------------------------
@@ -131,7 +131,7 @@ Install the ldap server (enter root password at administrator password)
 sudo apt-get install slapd ldap-utils
 ```
 
-After installation, go to this file and change the lines mentioned:
+After installation, go to this file and change the lines (which may be originally commented) mentioned:
 ```bash
 $ sudo gedit /etc/ldap/ldap.conf
 ...
@@ -170,14 +170,14 @@ Now install the phpLDAPadmin package and access the main configuration file:
 $ sudo apt-get install phpldapadmin
 $ sudo gedit /etc/phpldapadmin/config.php
 ```
-In the `config.php` file, change the lines as:
+In the `config.php` file, change the lines within the section `Define your LDAP severs in this section` as:
 
 ```php
 $servers->setValue('server','host','enter host IP address here');
 $servers->setValue('server','base',array('dc=ldap,dc=com'));
 $servers->setValue('login','bind_id','cn=admin,dc=ldap,dc=com');
 ```
-and uncomment the following line while changing its parameter to true:
+and uncomment the following line  (within the section `Appearance`) while changing its parameter to true:
 
 ```php
 $config->custom->appearance['hide_template_warning'] = true;
